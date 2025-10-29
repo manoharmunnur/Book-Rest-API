@@ -1,28 +1,17 @@
-# Step 1: Use Maven image to build the app
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-
-# Set working directory inside container
+# Step 1: Use an official JDK image to build the app
+FROM maven:3.9.8-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copy pom.xml and download dependencies (layer caching)
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy project files and build the jar
-COPY . .
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Step 2: Use a smaller runtime image for final container
-FROM eclipse-temurin:17-jdk-jammy
-
-# Set working directory for runtime
+# Step 2: Use a lightweight JRE image to run the app
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-
-# Copy the jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080
-EXPOSE 8080
+# Expose Render's dynamic port
+EXPOSE 4432
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Command to run the Spring Boot app
+ENTRYPOINT ["java","-jar","app.jar"]
