@@ -22,7 +22,7 @@ public class BookRestController {
 	@Autowired
 	private BookService service;
 	
-	@PostMapping("/book")
+	@PostMapping("/insertbook")
 	public ResponseEntity<String> addBook(@RequestBody Book book){
 		String msg = service.upsertBook(book);
 		
@@ -36,7 +36,7 @@ public class BookRestController {
 		return new ResponseEntity<>(allBooks, HttpStatus.OK);
 	}
 	
-	@PutMapping("/book")
+	@PutMapping("/updatebook")
 	public ResponseEntity<String> updateBook(@RequestBody Book book){
 		String msg = service.upsertBook(book);
 		
